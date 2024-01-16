@@ -23,6 +23,11 @@ public class FlightController {
         flightService.addFlight(flightRequest);
     }
 
+    @PutMapping("/modifyFlight")
+    public void modifyFlight(@RequestBody @Valid FlightRequest flightRequest){
+        flightService.modifyFlight(flightRequest);
+    }
+
     @GetMapping("/viewFlightById")
     public Flight viewFlight(@RequestParam int flightId) {
         return flightService.getFlightById(flightId);

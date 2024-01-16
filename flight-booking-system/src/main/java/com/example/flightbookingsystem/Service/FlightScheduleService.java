@@ -11,12 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
+
 @Slf4j
 @Service
 public class FlightScheduleService {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
 
     @Autowired
@@ -30,24 +31,22 @@ public class FlightScheduleService {
 
     @Transactional
     public void updateAvailableSeats(int scheduleId, int flightId, int numOfSeats) {
-
+        synchronized (this) {
             FlightSchedule flightSchedule = flightScheduleRepository.getFlightScheduleByFlightAndSchedule(scheduleId, flightId);
-            //review
-            log.info(" current thread {}, object : {}", Thread.currentThread().getName(), flightSchedule.getSeatsAvailable());
-
-
-
-           // entityManager.lock(flightSchedule, LockModeType.PESSIMISTIC_WRITE);
-            try {
-                Thread.sleep(100000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            //    log.info(" current thread {}, object : {}", Thread.currentThread().getName(), flightSchedule.getSeatsAvailable());
+            entityManager.lock(flightSchedule, LockModeType.PESSIMISTIC_WRITE);
+   /*
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    */
             int currentSeatsAvailable = flightSchedule.getSeatsAvailable() - numOfSeats;
             flightSchedule.setSeatsAvailable(currentSeatsAvailable);
             flightScheduleRepository.saveAndFlush(flightSchedule);
-            log.info(" current thread {}, object : {}", Thread.currentThread().getName(), flightSchedule.getSeatsAvailable());
-
+            //    log.info(" current thread {}, object : {}", Thread.currentThread().getName(), flightSchedule.getSeatsAvailable());
+        }
     }
 
     public FlightSchedule getFlightScheduleByFlightAndSchedule(int scheduleId, int flightId) {
@@ -57,10 +56,12 @@ public class FlightScheduleService {
 
     @Transactional
     public void resetAvailableSeats(int numOfSeats, int seatsAvailable, int scheduleId, int flightId) {
-        FlightSchedule flightSchedule = flightScheduleRepository.getFlightScheduleByFlightAndSchedule(scheduleId, flightId);
-        entityManager.lock(flightSchedule, LockModeType.PESSIMISTIC_WRITE);
-        int currentSeatsAvailable = flightScheduleRepository.findAvailableSeats(scheduleId, flightId)+numOfSeats;
-        flightScheduleRepository.resetAvailableSeats(scheduleId, flightId, currentSeatsAvailable);
-        flightScheduleRepository.save(flightSchedule);
+        synchronized (this) {
+            FlightSchedule flightSchedule = flightScheduleRepository.getFlightScheduleByFlightAndSchedule(scheduleId, flightId);
+            entityManager.lock(flightSchedule, LockModeType.PESSIMISTIC_WRITE);
+            int currentSeatsAvailable = flightScheduleRepository.findAvailableSeats(scheduleId, flightId) + numOfSeats;
+            flightScheduleRepository.resetAvailableSeats(scheduleId, flightId, currentSeatsAvailable);
+            flightScheduleRepository.save(flightSchedule);
+        }
     }
 }

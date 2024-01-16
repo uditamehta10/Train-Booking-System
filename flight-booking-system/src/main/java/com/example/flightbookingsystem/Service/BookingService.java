@@ -46,7 +46,7 @@ public class BookingService {
 
     public String bookFlight(BookingRequest bookingRequest) {
         Schedule schedule = scheduleService.getScheduleByScheduleId(bookingRequest.getScheduleId());
-      Flight flight = schedule.getFlight();
+        Flight flight = schedule.getFlight();
         if (bookingRequest.getNumOfSeats() > flightScheduleService.getSeatsAvailable(schedule.getScheduleId(), flight.getFlightId())) {
             Booking booking = new Booking();
             booking.setState(StateEnum.FAILED.toString());
@@ -88,7 +88,6 @@ public class BookingService {
     @Scheduled(cron = "*/60 * * * * *")
     public void updateSeatsFromIncompleteBookings() {
         List<Booking> incompleteBookings = bookingRepository.findByIsCompleteFalse();
-        // update available seats for each booking
         int numSeats = 0;
         for (Booking booking : incompleteBookings) {
        //     log.info("Scheduler started for booking id : {}", booking.getBookingId());
@@ -100,18 +99,11 @@ public class BookingService {
             long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
             if (diffInMinutes > 4) {
             numSeats = booking.getNumOfSeats();
-          //     log.info("num of seats for booking id : {}", booking.getBookingId());
-                //query state in_progress
                 Schedule schedule = booking.getSchedule();
                 FlightSchedule flightSchedule = flightScheduleService.getFlightScheduleByFlightAndSchedule(schedule.getScheduleId(), schedule.getFlight().getFlightId());
                 int seatsAvailable = flightSchedule.getSeatsAvailable();
-           //    log.info("seats available {}", seatsAvailable);
                 int newSeatsAvailable = seatsAvailable + numSeats;
-            //   log.info("new seats available {}", newSeatsAvailable);
-
                 if (newSeatsAvailable > flightSchedule.getTotalSeats()) {
-               //     log.info("Scheduler loop broken for booking id : {}", booking.getBookingId());
-                 //   log.info("totalseats for booking id : {}", flightSchedule.getTotalSeats());
                     booking.setState(StateEnum.FAILED.toString());
                     bookingRepository.save(booking);
                     break;
@@ -123,7 +115,6 @@ public class BookingService {
                 booking.setState(StateEnum.FAILED.toString());
                 booking.setIsCompleted(true);
                 bookingRepository.save(booking);
-          //      log.info("Booking updated for : {}", booking.getBookingId());
             }
 
         }

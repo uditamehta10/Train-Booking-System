@@ -26,6 +26,10 @@ public class ScheduleController {
         return scheduleService.searchFlightsByDateAndCity(departureCity, arrivalCity, date);
     }
 
+    @PutMapping("/modifySchedule")
+    public void modifySchedule(@RequestBody @Valid ScheduleRequest scheduleRequest){
+        scheduleService.modifySchedule(scheduleRequest);
+    }
 
     @PostMapping("/addSchedule")
     public void addSchedule(@RequestBody @Valid ScheduleRequest scheduleRequest) {

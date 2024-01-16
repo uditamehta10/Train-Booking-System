@@ -31,8 +31,8 @@ public class BookingController {
     }
 
     @PutMapping("/updateBookingStatus")
-    public void updateBooking(@RequestParam int bookingId) {
-        bookingService.updateBooking(bookingId);
+    public String updateBooking(@RequestParam int bookingId) {
+      return  bookingService.updateBooking(bookingId);
     }
 }
 

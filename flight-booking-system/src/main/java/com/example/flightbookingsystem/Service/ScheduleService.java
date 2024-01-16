@@ -52,5 +52,15 @@ public class ScheduleService {
 
     }
 
+    public void modifySchedule(ScheduleRequest scheduleRequest) {
+        Flight flight = new Flight();
+        flight.setFlightId(scheduleRequest.getFlightRequest().getFlightId());
+        flight.setAirlineName(scheduleRequest.getFlightRequest().getAirlineName());
+        flight.setSeatCapacity(scheduleRequest.getFlightRequest().getSeatCapacity());
+        Schedule schedule = new Schedule();
+        BeanUtils.copyProperties(scheduleRequest,schedule);
+        schedule.setFlight(flight);
+        scheduleRepository.save(schedule);
+    }
 }
 

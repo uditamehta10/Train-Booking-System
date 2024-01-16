@@ -49,7 +49,6 @@ public class FlightService {
             flightSchedule.setSeatsAvailable(flight.getSeatCapacity());
             flightSchedule.setTotalSeats(flight.getSeatCapacity());
             flightScheduleRepository.save(flightSchedule);
-
             schedules.add(schedule);
         }
         flight.setSchedules(schedules);
@@ -67,5 +66,28 @@ public class FlightService {
     }
 
 
+    public void modifyFlight(FlightRequest flightRequest) {
+        Flight flight = new Flight();
+        List<ScheduleRequest> scheduleRequests = flightRequest.getSchedules();
+        List<Schedule> schedules = new ArrayList<>();
+        flight.setFlightId(flightRequest.getFlightId());
+        flight.setAirlineName(flightRequest.getAirlineName());
+        flight.setSeatCapacity(flightRequest.getSeatCapacity());
+        for (ScheduleRequest scheduleRequest : scheduleRequests) {
+            Schedule schedule = new Schedule();
+            BeanUtils.copyProperties(scheduleRequest, schedule);
+            schedule.setFlight(flight);
+            FlightSchedule flightSchedule = new FlightSchedule();
+            flightSchedule.setFlight(flight);
+            flightSchedule.setSchedule(schedule);
+            flightSchedule.setSeatsAvailable(flight.getSeatCapacity());
+            flightSchedule.setTotalSeats(flight.getSeatCapacity());
+            flightScheduleRepository.save(flightSchedule);
+
+            schedules.add(schedule);
+        }
+        flight.setSchedules(schedules);
+        flightRepository.save(flight);
+    }
 }
 
