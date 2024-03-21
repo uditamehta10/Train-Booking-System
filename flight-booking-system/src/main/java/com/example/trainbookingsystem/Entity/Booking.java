@@ -1,9 +1,8 @@
-package com.example.flightbookingsystem.Entity;
+package com.example.trainbookingsystem.Entity;
 
 
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -23,7 +22,7 @@ public class Booking {
     Schedule schedule;
 
     @OneToOne
-    Flight flight;
+    Train train;
 
     private int numOfSeats;
 

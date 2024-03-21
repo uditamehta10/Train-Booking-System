@@ -1,4 +1,4 @@
-package com.example.flightbookingsystem.Requests;
+package com.example.trainbookingsystem.Requests;
 
 import lombok.Data;
 import javax.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 public class ScheduleRequest {
 
     @NotNull
-    FlightRequest flightRequest;
+    TrainRequest trainRequest;
     @NotNull
     String departureCity;
     @NotNull
@@ -17,7 +17,7 @@ public class ScheduleRequest {
     @NotNull
     String endTime;
     @NotNull
-    String flightDuration;
+    String trainDuration;
     @NotNull
     String date;
     @NotNull

@@ -1,4 +1,4 @@
-package com.example.flightbookingsystem.Requests;
+package com.example.trainbookingsystem.Requests;
 
 import lombok.Data;
 import javax.validation.constraints.NotNull;

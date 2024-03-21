@@ -1,4 +1,4 @@
-package com.example.flightbookingsystem.Config;
+package com.example.trainbookingsystem.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;

@@ -1,8 +1,8 @@
-package com.example.flightbookingsystem.Controller;
+package com.example.trainbookingsystem.Controller;
 
-import com.example.flightbookingsystem.Entity.Schedule;
-import com.example.flightbookingsystem.Requests.ScheduleRequest;
-import com.example.flightbookingsystem.Service.ScheduleService;
+import com.example.trainbookingsystem.Entity.Schedule;
+import com.example.trainbookingsystem.Requests.ScheduleRequest;
+import com.example.trainbookingsystem.Service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +17,13 @@ public class ScheduleController {
     ScheduleService scheduleService;
 
 
-    @GetMapping("/flights/search")
-    public List<Schedule> searchFlightsByDateAndCity(
+    @GetMapping("/trains/search")
+    public List<Schedule> searchTrainsByDateAndCity(
             @RequestParam("departureCity") String departureCity,
             @RequestParam("arrivalCity") String arrivalCity,
             @RequestParam("date") String date) {
 
-        return scheduleService.searchFlightsByDateAndCity(departureCity, arrivalCity, date);
+        return scheduleService.searchTrainsByDateAndCity(departureCity, arrivalCity, date);
     }
 
     @PutMapping("/modifySchedule")
@@ -37,8 +37,8 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/deleteSchedule/{id}")
-    public void removeSchedule(@PathVariable("id") int flightId) {
-        ScheduleService.removeSchedule(flightId);
+    public void removeSchedule(@PathVariable("id") int trainId) {
+        ScheduleService.removeSchedule(trainId);
     }
 
 

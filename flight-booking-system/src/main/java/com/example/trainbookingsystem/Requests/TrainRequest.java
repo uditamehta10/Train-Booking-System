@@ -1,16 +1,15 @@
-package com.example.flightbookingsystem.Requests;
+package com.example.trainbookingsystem.Requests;
 
-import com.example.flightbookingsystem.Entity.Schedule;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class FlightRequest {
+public class TrainRequest {
 
     @NotNull
-    int flightId;
+    int trainId;
 
     @NotNull
     String airlineName;

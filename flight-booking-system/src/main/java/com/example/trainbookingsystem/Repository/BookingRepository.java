@@ -1,6 +1,6 @@
-package com.example.flightbookingsystem.Repository;
+package com.example.trainbookingsystem.Repository;
 
-import com.example.flightbookingsystem.Entity.Booking;
+import com.example.trainbookingsystem.Entity.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

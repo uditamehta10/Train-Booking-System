@@ -1,19 +1,19 @@
-package com.example.flightbookingsystem.Service;
+package com.example.trainbookingsystem.Service;
 
-import com.example.flightbookingsystem.Entity.Booking;
-import com.example.flightbookingsystem.Entity.Flight;
-import com.example.flightbookingsystem.Entity.FlightSchedule;
-import com.example.flightbookingsystem.Entity.Schedule;
-import com.example.flightbookingsystem.Enum.StateEnum;
-import com.example.flightbookingsystem.Repository.BookingRepository;
-import com.example.flightbookingsystem.Repository.FlightScheduleRepository;
-import com.example.flightbookingsystem.Requests.BookingRequest;
+import com.example.trainbookingsystem.Entity.Booking;
+
+import com.example.trainbookingsystem.Entity.Schedule;
+import com.example.trainbookingsystem.Entity.Train;
+import com.example.trainbookingsystem.Entity.TrainSchedule;
+import com.example.trainbookingsystem.Enum.StateEnum;
+import com.example.trainbookingsystem.Repository.BookingRepository;
+import com.example.trainbookingsystem.Repository.TrainScheduleRepository;
+import com.example.trainbookingsystem.Requests.BookingRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,10 +29,10 @@ public class BookingService {
     ScheduleService scheduleService;
 
     @Autowired
-    FlightScheduleService flightScheduleService;
+    TrainScheduleService trainScheduleService;
 
     @Autowired
-    FlightScheduleRepository flightScheduleRepository;
+    TrainScheduleRepository trainScheduleRepository;
 
 
     public Booking getBookingById(int bookingId) {
@@ -44,34 +44,34 @@ public class BookingService {
     }
 
 
-    public String bookFlight(BookingRequest bookingRequest) {
+    public String bookTrain(BookingRequest bookingRequest) {
         Schedule schedule = scheduleService.getScheduleByScheduleId(bookingRequest.getScheduleId());
-        Flight flight = schedule.getFlight();
-        if (bookingRequest.getNumOfSeats() > flightScheduleService.getSeatsAvailable(schedule.getScheduleId(), flight.getFlightId())) {
+        Train train = schedule.getTrain();
+        if (bookingRequest.getNumOfSeats() > trainScheduleService.getSeatsAvailable(schedule.getScheduleId(), train.getTrainId())) {
             Booking booking = new Booking();
             booking.setState(StateEnum.FAILED.toString());
-            booking.setFlight(flight);
+            booking.setTrain(train);
             booking.setSchedule(schedule);
             booking.setNumOfSeats(bookingRequest.getNumOfSeats());
             booking.setTotalCost(schedule.getFare() * bookingRequest.getNumOfSeats());
             booking.setIsCompleted(true);
             bookingRepository.save(booking);
-            return "Not enough seats available. The number of seats available are : " + flightScheduleService.getSeatsAvailable(schedule.getScheduleId(), flight.getFlightId());
+            return "Not enough seats available. The number of seats available are : " + trainScheduleService.getSeatsAvailable(schedule.getScheduleId(), train.getTrainId());
         } else {
             Booking booking = new Booking();
             booking.setState(StateEnum.IN_PROGRESS.toString());
-            booking.setFlight(flight);
+            booking.setTrain(train);
             booking.setSchedule(schedule);
             booking.setNumOfSeats(bookingRequest.getNumOfSeats());
             booking.setTotalCost(schedule.getFare() * bookingRequest.getNumOfSeats());
             booking.setIsCompleted(false);
             bookingRepository.save(booking);
-            flightScheduleService.updateAvailableSeats(schedule.getScheduleId(), flight.getFlightId(), booking.getNumOfSeats());
+            trainScheduleService.updateAvailableSeats(schedule.getScheduleId(), train.getTrainId(), booking.getNumOfSeats());
 
-            if (flightScheduleService.getSeatsAvailable(schedule.getScheduleId(), flight.getFlightId()) < 0) {
+            if (trainScheduleService.getSeatsAvailable(schedule.getScheduleId(), train.getTrainId()) < 0) {
                 booking.setState(StateEnum.FAILED.toString());
                 booking.setIsCompleted(true);
-                flightScheduleService.resetAvailableSeats(booking.getNumOfSeats(), flightScheduleService.getSeatsAvailable(schedule.getScheduleId(), flight.getFlightId()), schedule.getScheduleId(), flight.getFlightId());
+                trainScheduleService.resetAvailableSeats(booking.getNumOfSeats(), trainScheduleService.getSeatsAvailable(schedule.getScheduleId(), train.getTrainId()), schedule.getScheduleId(), train.getTrainId());
             }
         }
         return "Booking in progress";
@@ -100,18 +100,18 @@ public class BookingService {
             if (diffInMinutes > 4) {
             numSeats = booking.getNumOfSeats();
                 Schedule schedule = booking.getSchedule();
-                FlightSchedule flightSchedule = flightScheduleService.getFlightScheduleByFlightAndSchedule(schedule.getScheduleId(), schedule.getFlight().getFlightId());
-                int seatsAvailable = flightSchedule.getSeatsAvailable();
+                TrainSchedule trainSchedule = trainScheduleService.getTrainScheduleByTrainAndSchedule(schedule.getScheduleId(), schedule.getTrain().getTrainId());
+                int seatsAvailable = trainSchedule.getSeatsAvailable();
                 int newSeatsAvailable = seatsAvailable + numSeats;
-                if (newSeatsAvailable > flightSchedule.getTotalSeats()) {
+                if (newSeatsAvailable > trainSchedule.getTotalSeats()) {
                     booking.setState(StateEnum.FAILED.toString());
                     bookingRepository.save(booking);
                     break;
 
                 }
 
-                flightSchedule.setSeatsAvailable(newSeatsAvailable);
-                flightScheduleRepository.save(flightSchedule);
+                trainSchedule.setSeatsAvailable(newSeatsAvailable);
+                trainScheduleRepository.save(trainSchedule);
                 booking.setState(StateEnum.FAILED.toString());
                 booking.setIsCompleted(true);
                 bookingRepository.save(booking);

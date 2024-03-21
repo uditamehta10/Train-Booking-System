@@ -1,4 +1,4 @@
-package com.example.flightbookingsystem.Entity;
+package com.example.trainbookingsystem.Entity;
 
 
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table
-public class FlightSchedule {
+public class TrainSchedule {
 
 
     @Id
@@ -20,7 +20,7 @@ public class FlightSchedule {
 
 
     @OneToOne(cascade = CascadeType.ALL)
-    Flight flight;
+    Train train;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Schedule schedule;

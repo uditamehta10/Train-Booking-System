@@ -1,4 +1,4 @@
-package com.example.flightbookingsystem.Entity;
+package com.example.trainbookingsystem.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class Schedule {
 
     @ManyToOne
     @JsonBackReference
-    Flight flight;
+    Train train;
 
     String departureCity;
 
@@ -28,7 +28,7 @@ public class Schedule {
 
     String endTime;
 
-    String flightDuration;
+    String trainDuration;
 
     @Column(name = "schedule_date")
     String date;

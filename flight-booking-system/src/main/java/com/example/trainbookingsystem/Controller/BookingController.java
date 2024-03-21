@@ -1,8 +1,8 @@
-package com.example.flightbookingsystem.Controller;
+package com.example.trainbookingsystem.Controller;
 
-import com.example.flightbookingsystem.Entity.Booking;
-import com.example.flightbookingsystem.Requests.BookingRequest;
-import com.example.flightbookingsystem.Service.BookingService;
+import com.example.trainbookingsystem.Entity.Booking;
+import com.example.trainbookingsystem.Requests.BookingRequest;
+import com.example.trainbookingsystem.Service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +27,7 @@ public class BookingController {
 
     @PostMapping("/BookFlight")
     public String bookFlight(@RequestBody @Valid BookingRequest bookingRequest) {
-        return bookingService.bookFlight(bookingRequest);
+        return bookingService.bookTrain(bookingRequest);
     }
 
     @PutMapping("/updateBookingStatus")

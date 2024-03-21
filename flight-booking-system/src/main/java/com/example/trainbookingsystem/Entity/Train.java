@@ -1,8 +1,10 @@
-package com.example.flightbookingsystem.Entity;
+package com.example.trainbookingsystem.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,17 +15,19 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "Flight")
-public class Flight {
+@Table(name = "Train")
+@Getter
+@Setter
+public class Train {
 
 
     @Id
-    int flightId;
+    int trainId;
 
     String airlineName;
     int seatCapacity;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
     @JsonManagedReference
     List<Schedule> schedules;
 

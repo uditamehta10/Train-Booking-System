@@ -1,4 +1,4 @@
-package com.example.flightbookingsystem.Enum;
+package com.example.trainbookingsystem.Enum;
 
 
 
